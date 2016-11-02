@@ -137,6 +137,7 @@ export var BookingForm = React.createClass({
               <div>This form is included for entering parameters in URL for the next view</div>
           </div>
           {renderError()}
+          
         </div>
       </div>
     );

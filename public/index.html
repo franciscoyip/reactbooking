@@ -11,5 +11,57 @@
   <body class="clearfix">
     <div id="app"></div>
     <script src="bundle.js" charset="utf-8"></script>
+    <div style="padding: 1em;">
+      <h4>Responses to questions</h4>
+      <ul>
+        <li>
+          <div>How would you handle branding and theming for different hotels?</div>
+          <p>
+            With CSS prosessing, all the css variables can be easily modified with different css themes.
+            See scss files in /app/styles
+          </p>
+        </li>
+        <li>
+          <div>How should 10+ different languages be supported?</div>
+          <p>
+            The general idea is having string translation for each language and have the HTML template or view library
+            to replace the string holder with the corresponding translation.
+          </p>
+          <textarea disabled style="height: 150px; font-size: 0.8em;">import lang_en from './i18n/en';
+import lang_fr from './i18n/fr';
+
+const lang = {
+  en:lang_en,
+  fr:lang_fr
+}
+
+&lt;SomeComponent strings={lang[en]}/&gt;</textarea>
+          <p>
+            There is an community module react-translate to help replacing text based on the string key.
+            <br/>For AngularJS, it support intenationalization and localization which makes setting locales rules easier.
+            There are also community supported modules like angular-translate to help the app interface to show different translation.
+          </p>
+        </li>
+        <li>
+          <div>How should 10+ different currencies be supported?</div>
+          <p>
+            There could be couple methods to support that. However, I would prefer the following for hotel client. <br/>
+            Store price in a base currency ( like US/Euro ) with the conversion rates in the data and generate multiple currencies in hourly, daily basis.<br/>
+            This only require one set of exchange rates instead of basing all other local currencies.
+            Also, this makes more sense for business since some currencies do not have a stable exhange rate.<br/>
+            For example, in my home town Macau, we have our own currecy call Pataca but most casinos only accept Hong Kong dollars and US dollars.
+            Another example, last year we went to Turkey and most hotels only accept US dollars and Euro.
+          </p>
+        </li>
+        <li>
+          <div>How would you handle no offers available if there are no matching rules?</div>
+          <p>
+            According to the spec, this case is not mentioned. During the meeting with the project manager or stake owner, this should be cleared out.
+            For suggestion, I would highly recomment to have a fallback offer if no featured offers are available instead of showing message saying no offer.
+            The client don't want to miss any chance for business.
+          </p>
+        </li>
+      </ul>
+    </div>
   </body>
 </html>

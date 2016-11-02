@@ -22,13 +22,22 @@ module.exports = {
     }
   },
   getOffers: (rooms, item_id, price)=>{
-    return rooms.filter((room)=>{
-      if(room.item_id !== 103){
-        return room.item_id > item_id;
-      }else {
-        return (price >= 199);
+    var fallbacks = [];
+    var regularOffers = rooms.filter((room)=>{
+      if(room.item_id !== 999){
+        if(room.item_id !== 103){
+          return room.item_id > item_id;
+        }else {
+          return (price >= 199);
+        }
+      }else{
+        fallbacks.push(room);
+        return false;
       }
     });
+
+    return regularOffers.length > 0 ? regularOffers : fallbacks;
+
   },
   getSummary: (rooms, guest)=>{
 
@@ -39,7 +48,7 @@ module.exports = {
       if(room.item_id < 103 && room.selected){
         selected = room;
       }
-      if(room.item_id === 103 && room.selected){
+      if(room.item_id === 103 && room.selected || room.item_id === 999 && room.selected){
         service = room;
       }
       if(selected && service){

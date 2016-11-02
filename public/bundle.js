@@ -119,15 +119,15 @@
 
 	var _Reservation2 = _interopRequireDefault(_Reservation);
 
-	var _Confirmation = __webpack_require__(306);
+	var _Confirmation = __webpack_require__(307);
 
 	var _Confirmation2 = _interopRequireDefault(_Confirmation);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var store = __webpack_require__(308).configure();
+	var store = __webpack_require__(309).configure();
 
-	__webpack_require__(311);
+	__webpack_require__(312);
 
 	//Load CSS Framework
 	$(document).foundation();
@@ -29433,7 +29433,7 @@
 
 	var _Offers2 = _interopRequireDefault(_Offers);
 
-	var _BookingAPI = __webpack_require__(305);
+	var _BookingAPI = __webpack_require__(306);
 
 	var _BookingAPI2 = _interopRequireDefault(_BookingAPI);
 
@@ -29571,7 +29571,7 @@
 	    };
 
 	    function failed(res) {
-	      console.log('Something went wrong');
+	      //console.log('Something went wrong');
 	    }
 
 	    return axios.get(url).then(success).catch(failed);
@@ -31059,7 +31059,7 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _Offer = __webpack_require__(315);
+	var _Offer = __webpack_require__(305);
 
 	var _Offer2 = _interopRequireDefault(_Offer);
 
@@ -31114,6 +31114,111 @@
 
 /***/ },
 /* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Offer = undefined;
+
+	var _react = __webpack_require__(8);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(179);
+
+	var _actions = __webpack_require__(279);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Offer = exports.Offer = _react2.default.createClass({
+	  displayName: 'Offer',
+
+
+	  selectOffer: function selectOffer(item_id) {
+	    var dispatch = this.props.dispatch;
+
+
+	    dispatch(_actions2.default.selectOffer(item_id));
+	  },
+	  render: function render() {
+	    var _this = this;
+
+	    var _props = this.props,
+	        item_id = _props.item_id,
+	        image_url = _props.image_url,
+	        tag = _props.tag,
+	        short_desc = _props.short_desc,
+	        long_desc = _props.long_desc,
+	        price = _props.price,
+	        selected = _props.selected;
+
+
+	    return _react2.default.createElement(
+	      'li',
+	      { className: 'clearfix' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'column-3 float-left' },
+	        _react2.default.createElement('img', { src: image_url }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'tag' },
+	          tag
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'column-5 float-left' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'content' },
+	          _react2.default.createElement(
+	            'h4',
+	            { className: 'short_desc' },
+	            short_desc
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'long_desc' },
+	            _react2.default.createElement(
+	              'p',
+	              null,
+	              long_desc
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'price-area-items' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'price' },
+	              price
+	            ),
+	            _react2.default.createElement(
+	              'button',
+	              { type: 'button', className: 'expanded button', onClick: function onClick(e) {
+	                  e.preventDefault();
+	                  _this.selectOffer(item_id);
+	                } },
+	              selected ? 'Selected' : 'Choose'
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	exports.default = (0, _reactRedux.connect)()(Offer);
+
+/***/ },
+/* 306 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31142,13 +31247,21 @@
 	    }
 	  },
 	  getOffers: function getOffers(rooms, item_id, price) {
-	    return rooms.filter(function (room) {
-	      if (room.item_id !== 103) {
-	        return room.item_id > item_id;
+	    var fallbacks = [];
+	    var regularOffers = rooms.filter(function (room) {
+	      if (room.item_id !== 999) {
+	        if (room.item_id !== 103) {
+	          return room.item_id > item_id;
+	        } else {
+	          return price >= 199;
+	        }
 	      } else {
-	        return price >= 199;
+	        fallbacks.push(room);
+	        return false;
 	      }
 	    });
+
+	    return regularOffers.length > 0 ? regularOffers : fallbacks;
 	  },
 	  getSummary: function getSummary(rooms, guest) {
 
@@ -31159,7 +31272,7 @@
 	      if (room.item_id < 103 && room.selected) {
 	        selected = room;
 	      }
-	      if (room.item_id === 103 && room.selected) {
+	      if (room.item_id === 103 && room.selected || room.item_id === 999 && room.selected) {
 	        service = room;
 	      }
 	      if (selected && service) {
@@ -31188,7 +31301,7 @@
 	};
 
 /***/ },
-/* 306 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31216,7 +31329,7 @@
 
 	var _RoomInformation2 = _interopRequireDefault(_RoomInformation);
 
-	var _Summary = __webpack_require__(307);
+	var _Summary = __webpack_require__(308);
 
 	var _Summary2 = _interopRequireDefault(_Summary);
 
@@ -31224,7 +31337,7 @@
 
 	var _Offers2 = _interopRequireDefault(_Offers);
 
-	var _BookingAPI = __webpack_require__(305);
+	var _BookingAPI = __webpack_require__(306);
 
 	var _BookingAPI2 = _interopRequireDefault(_BookingAPI);
 
@@ -31285,7 +31398,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Confirmation);
 
 /***/ },
-/* 307 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31417,7 +31530,7 @@
 	module.exports = Summary;
 
 /***/ },
-/* 308 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31426,9 +31539,9 @@
 	  value: true
 	});
 	var redux = __webpack_require__(186);
-	var thunk = __webpack_require__(309).default;
+	var thunk = __webpack_require__(310).default;
 
-	var _require = __webpack_require__(310),
+	var _require = __webpack_require__(311),
 	    roomReducer = _require.roomReducer,
 	    summaryReducer = _require.summaryReducer;
 
@@ -31450,7 +31563,7 @@
 	};
 
 /***/ },
-/* 309 */
+/* 310 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31478,7 +31591,7 @@
 	exports['default'] = thunk;
 
 /***/ },
-/* 310 */
+/* 311 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31570,16 +31683,16 @@
 	};
 
 /***/ },
-/* 311 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(312);
+	var content = __webpack_require__(313);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(314)(content, {});
+	var update = __webpack_require__(315)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -31596,10 +31709,10 @@
 	}
 
 /***/ },
-/* 312 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(313)();
+	exports = module.exports = __webpack_require__(314)();
 	// imports
 
 
@@ -31610,7 +31723,7 @@
 
 
 /***/ },
-/* 313 */
+/* 314 */
 /***/ function(module, exports) {
 
 	/*
@@ -31666,7 +31779,7 @@
 
 
 /***/ },
-/* 314 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -31916,111 +32029,6 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
-
-/***/ },
-/* 315 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.Offer = undefined;
-
-	var _react = __webpack_require__(8);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(179);
-
-	var _actions = __webpack_require__(279);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Offer = exports.Offer = _react2.default.createClass({
-	  displayName: 'Offer',
-
-
-	  selectOffer: function selectOffer(item_id) {
-	    var dispatch = this.props.dispatch;
-
-
-	    dispatch(_actions2.default.selectOffer(item_id));
-	  },
-	  render: function render() {
-	    var _this = this;
-
-	    var _props = this.props,
-	        item_id = _props.item_id,
-	        image_url = _props.image_url,
-	        tag = _props.tag,
-	        short_desc = _props.short_desc,
-	        long_desc = _props.long_desc,
-	        price = _props.price,
-	        selected = _props.selected;
-
-
-	    return _react2.default.createElement(
-	      'li',
-	      { className: 'clearfix' },
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'column-3 float-left' },
-	        _react2.default.createElement('img', { src: image_url }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'tag' },
-	          tag
-	        )
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'column-5 float-left' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'content' },
-	          _react2.default.createElement(
-	            'h4',
-	            { className: 'short_desc' },
-	            short_desc
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'long_desc' },
-	            _react2.default.createElement(
-	              'p',
-	              null,
-	              long_desc
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'price-area-items' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'price' },
-	              price
-	            ),
-	            _react2.default.createElement(
-	              'button',
-	              { type: 'button', className: 'expanded button', onClick: function onClick(e) {
-	                  e.preventDefault();
-	                  _this.selectOffer(item_id);
-	                } },
-	              selected ? 'Selected' : 'Choose'
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-
-	});
-
-	exports.default = (0, _reactRedux.connect)()(Offer);
 
 /***/ }
 /******/ ]);

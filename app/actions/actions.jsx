@@ -34,7 +34,7 @@ var queryRooms = ()=>{
     };
 
     function failed(res){
-      console.log('Something went wrong');
+      //console.log('Something went wrong');
     }
 
     return axios.get(url).then(success).catch(failed);

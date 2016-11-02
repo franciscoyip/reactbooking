@@ -26,7 +26,7 @@ export var Reservation = React.createClass({
     //dispatch Confirmation
     let summary = BookingAPI.getSummary(rooms, guest);
     dispatch( actions.setSummary(summary) );
-
+    dispatch(actions.submitConfirmation());
     //route to confirmation page
     this.context.router.push({
       pathname:'/confirmation'

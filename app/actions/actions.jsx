@@ -48,10 +48,33 @@ var setSummary = (summary)=>{
   }
 };
 
+var submitConfirmation = ()=>{
+  let url = "/api/rooms";
+
+  return (dispatch, getState)=>{
+    let {summary, model} = getState();
+    let data = {
+      summary,
+      guest: model.guest
+    }
+
+    function success(res){
+      console.log('Success');
+    };
+
+    function failed(res){
+      console.log('API not found');
+    }
+
+    return axios.post(url, data).then(success).catch(failed);
+  };
+};
+
 module.exports = {
   setGuest,
   queryRooms,
   addRooms,
   selectOffer,
-  setSummary
+  setSummary,
+  submitConfirmation
 }

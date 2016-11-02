@@ -29464,7 +29464,7 @@
 
 	    var summary = _BookingAPI2.default.getSummary(rooms, guest);
 	    dispatch(_actions2.default.setSummary(summary));
-
+	    dispatch(_actions2.default.submitConfirmation());
 	    //route to confirmation page
 	    this.context.router.push({
 	      pathname: '/confirmation'
@@ -29585,12 +29585,38 @@
 	  };
 	};
 
+	var submitConfirmation = function submitConfirmation() {
+	  var url = "/api/rooms";
+
+	  return function (dispatch, getState) {
+	    var _getState = getState(),
+	        summary = _getState.summary,
+	        model = _getState.model;
+
+	    var data = {
+	      summary: summary,
+	      guest: model.guest
+	    };
+
+	    function success(res) {
+	      console.log('Success');
+	    };
+
+	    function failed(res) {
+	      console.log('API not found');
+	    }
+
+	    return axios.post(url, data).then(success).catch(failed);
+	  };
+	};
+
 	module.exports = {
 	  setGuest: setGuest,
 	  queryRooms: queryRooms,
 	  addRooms: addRooms,
 	  selectOffer: selectOffer,
-	  setSummary: setSummary
+	  setSummary: setSummary,
+	  submitConfirmation: submitConfirmation
 	};
 
 /***/ },

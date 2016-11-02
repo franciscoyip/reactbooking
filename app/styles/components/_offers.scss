@@ -1,0 +1,92 @@
+.offers {
+
+  ul, li {
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    position: relative;
+    list-style: none;
+    margin-bottom: 0.5em;
+
+    border: 1px solid #dddddd;
+  }
+
+  .tag {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    background-color: $price-yellow;
+    padding: 0.2em;
+    color: $white;
+
+    text-transform: capitalize;
+    font-weight: bold;
+    width: 50%;
+  }
+
+  .long_desc {
+    width: 70%;
+
+    p {
+      text-align: justify;
+    }
+  }
+
+  .price-area-items {
+    width: 21%;
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
+
+    .price {
+      text-align: center;
+      text-transform: capitalize;
+      color: $price-yellow;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .button {
+      margin-bottom: 0;
+      font-size: 1rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .offers {
+    .tag {
+      width: 60%;
+      text-align: center;
+    }
+
+    .price-area-items {
+      .price {
+        font-size: 1em;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .offers {
+    .tag {
+      width: 100%;
+      text-align: center;
+      line-height: 1.2;
+      position: relative;
+    }
+
+    .long_desc {
+      width: 100%;
+    }
+
+    .price-area-items {
+      position: relative;
+      width: 100%;
+      margin: 0 0.5em 0 0.5em;
+    }
+  }
+}

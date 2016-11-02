@@ -1,0 +1,14 @@
+.summary {
+  table tbody tr:nth-child(even){
+    background-color: transparent;
+  }
+
+  table tbody tr td:nth-child(even){
+    text-align: right;
+  }
+
+  .total {
+    color: $price-green;
+    font-weight: bold;
+  }
+}

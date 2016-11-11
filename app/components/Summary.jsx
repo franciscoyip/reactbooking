@@ -2,7 +2,7 @@ import React from 'react';
 
 var Summary = React.createClass({
   render: function(){
-    var {code, roomcost, servicefee, service, total} = this.props;
+    const {code, roomcost, servicefee, service, total} = this.props;
 
     return (
       <div className="summary clearfix">

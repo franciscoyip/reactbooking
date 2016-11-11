@@ -2,7 +2,8 @@ import React from 'react';
 
 var GuestInformation = React.createClass({
   render: function(){
-    var {first, last, email} = this.props;
+
+    const {first, last, email} = this.props;
 
     return (
       <div className="guest">

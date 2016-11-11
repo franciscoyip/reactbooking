@@ -119,7 +119,7 @@
 
 	var _Reservation2 = _interopRequireDefault(_Reservation);
 
-	var _Confirmation = __webpack_require__(307);
+	var _Confirmation = __webpack_require__(279);
 
 	var _Confirmation2 = _interopRequireDefault(_Confirmation);
 
@@ -28902,7 +28902,7 @@
 	    )
 	  );
 	};
-	//<!--<li><Link to="/schedule" activeClassName="active-link">My Schedule</Link></li>-->
+
 	module.exports = Nav;
 
 /***/ },
@@ -29409,7 +29409,8 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Reservation = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(8);
 
@@ -29417,103 +29418,216 @@
 
 	var _reactRedux = __webpack_require__(179);
 
-	var _actions = __webpack_require__(279);
+	var _actions = __webpack_require__(285);
 
-	var _actions2 = _interopRequireDefault(_actions);
+	var actions = _interopRequireWildcard(_actions);
 
-	var _GuestInformation = __webpack_require__(302);
+	var _GuestInformation = __webpack_require__(280);
 
 	var _GuestInformation2 = _interopRequireDefault(_GuestInformation);
 
-	var _RoomInformation = __webpack_require__(303);
+	var _RoomInformation = __webpack_require__(281);
 
 	var _RoomInformation2 = _interopRequireDefault(_RoomInformation);
 
-	var _Offers = __webpack_require__(304);
+	var _Offers = __webpack_require__(283);
 
 	var _Offers2 = _interopRequireDefault(_Offers);
 
-	var _BookingAPI = __webpack_require__(306);
+	var _BookingAPI = __webpack_require__(308);
+
+	var _BookingAPI2 = _interopRequireDefault(_BookingAPI);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Reservation = function (_Component) {
+	  _inherits(Reservation, _Component);
+
+	  function Reservation() {
+	    _classCallCheck(this, Reservation);
+
+	    return _possibleConstructorReturn(this, (Reservation.__proto__ || Object.getPrototypeOf(Reservation)).apply(this, arguments));
+	  }
+
+	  _createClass(Reservation, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.props.setGuest(this.props.location.query);
+	      this.props.queryRooms();
+	    }
+	  }, {
+	    key: 'handleConfirm',
+	    value: function handleConfirm(e) {
+	      e.preventDefault();
+
+	      var _props = this.props,
+	          guest = _props.guest,
+	          rooms = _props.rooms,
+	          setSummary = _props.setSummary,
+	          submitConfirmation = _props.submitConfirmation;
+
+	      //dispatch Confirmation
+
+	      var summary = _BookingAPI2.default.getSummary(rooms, guest);
+	      setSummary(summary);
+	      submitConfirmation();
+	      //route to confirmation page
+	      this.context.router.push({
+	        pathname: '/confirmation'
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props2 = this.props,
+	          guest = _props2.guest,
+	          rooms = _props2.rooms,
+	          dispatch = _props2.dispatch;
+
+	      var offers = [];
+	      var bookedroom = _BookingAPI2.default.getBookedRoom(rooms, guest);
+	      if (bookedroom) {
+	        offers = _BookingAPI2.default.getOffers(rooms, bookedroom.item_id, guest.price);
+	      }
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'small-11 small-centered medium-9 medium-centered large-8 large-centered columns' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'container' },
+	          _react2.default.createElement(
+	            'h1',
+	            { className: 'page-title-thick' },
+	            'Your Booking with NorOne'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'details' },
+	            _react2.default.createElement(_GuestInformation2.default, guest),
+	            _react2.default.createElement(_RoomInformation2.default, bookedroom),
+	            _react2.default.createElement(_Offers2.default, { offers: offers }),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'confirm-wrap' },
+	              _react2.default.createElement(
+	                'button',
+	                { className: 'button', onClick: this.handleConfirm.bind(this) },
+	                'Confirm'
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement('i', { className: 'fi-asterisk' }),
+	            ' User can only select one room upgrade offer and the champagne service if offered.'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Reservation;
+	}(_react.Component);
+
+	Reservation.contextTypes = {
+	  router: _react2.default.PropTypes.object
+	};
+
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    guest: state.model.guest,
+	    rooms: state.model.rooms
+	  };
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, actions)(Reservation);
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Confirmation = undefined;
+
+	var _react = __webpack_require__(8);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(179);
+
+	var _GuestInformation = __webpack_require__(280);
+
+	var _GuestInformation2 = _interopRequireDefault(_GuestInformation);
+
+	var _RoomInformation = __webpack_require__(281);
+
+	var _RoomInformation2 = _interopRequireDefault(_RoomInformation);
+
+	var _Summary = __webpack_require__(282);
+
+	var _Summary2 = _interopRequireDefault(_Summary);
+
+	var _Offers = __webpack_require__(283);
+
+	var _Offers2 = _interopRequireDefault(_Offers);
+
+	var _BookingAPI = __webpack_require__(308);
 
 	var _BookingAPI2 = _interopRequireDefault(_BookingAPI);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Reservation = exports.Reservation = _react2.default.createClass({
-	  displayName: 'Reservation',
+	var Confirmation = exports.Confirmation = _react2.default.createClass({
+	  displayName: 'Confirmation',
 
 	  contextTypes: {
 	    router: _react2.default.PropTypes.object
 	  },
-	  componentDidMount: function componentDidMount() {
-	    var dispatch = this.props.dispatch;
-
-
-	    dispatch(_actions2.default.setGuest(this.props.location.query));
-	    dispatch(_actions2.default.queryRooms());
-	  },
-	  handleConfirm: function handleConfirm(e) {
-	    e.preventDefault();
-
+	  render: function render() {
 	    var _props = this.props,
 	        guest = _props.guest,
 	        rooms = _props.rooms,
-	        dispatch = _props.dispatch;
+	        summary = _props.summary;
 
-	    //dispatch Confirmation
-
-	    var summary = _BookingAPI2.default.getSummary(rooms, guest);
-	    dispatch(_actions2.default.setSummary(summary));
-	    dispatch(_actions2.default.submitConfirmation());
-	    //route to confirmation page
-	    this.context.router.push({
-	      pathname: '/confirmation'
-	    });
-	  },
-	  render: function render() {
-	    var _props2 = this.props,
-	        guest = _props2.guest,
-	        rooms = _props2.rooms,
-	        dispatch = _props2.dispatch;
-
-	    var offers = [];
-	    var bookedroom = _BookingAPI2.default.getBookedRoom(rooms, guest);
-	    if (bookedroom) {
-	      offers = _BookingAPI2.default.getOffers(rooms, bookedroom.item_id, guest.price);
-	    }
+	    var bookedroom = _BookingAPI2.default.getUpgradedRoom(rooms, guest);
 
 	    return _react2.default.createElement(
 	      'div',
-	      { className: 'small-11 small-centered medium-9 medium-centered large-8 large-centered columns' },
+	      { className: 'small-11 small-centered medium-8 medium-centered large-8 large-centered columns' },
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'container' },
 	        _react2.default.createElement(
 	          'h1',
 	          { className: 'page-title-thick' },
-	          'Your Booking with NorOne'
+	          'Confirmation for booking with NorOne'
 	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'details' },
 	          _react2.default.createElement(_GuestInformation2.default, guest),
 	          _react2.default.createElement(_RoomInformation2.default, bookedroom),
-	          _react2.default.createElement(_Offers2.default, { offers: offers }),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'confirm-wrap' },
-	            _react2.default.createElement(
-	              'button',
-	              { className: 'button', onClick: this.handleConfirm },
-	              'Confirm'
-	            )
-	          )
+	          _react2.default.createElement(_Summary2.default, summary)
 	        ),
 	        _react2.default.createElement(
 	          'div',
 	          null,
 	          _react2.default.createElement('i', { className: 'fi-asterisk' }),
-	          ' User can only select one room upgrade offer and the champagne service if offered.'
+	          ' This page view is designed to route to main page on refresh.'
 	        )
 	      )
 	    );
@@ -29523,21 +29637,432 @@
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
 	    guest: state.model.guest,
-	    rooms: state.model.rooms
+	    rooms: state.model.rooms,
+	    summary: state.summary
 	  };
 	};
 
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Reservation);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Confirmation);
 
 /***/ },
-/* 279 */
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _react = __webpack_require__(8);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var GuestInformation = _react2.default.createClass({
+	  displayName: "GuestInformation",
+
+	  render: function render() {
+	    var _props = this.props,
+	        first = _props.first,
+	        last = _props.last,
+	        email = _props.email;
+
+
+	    return _react2.default.createElement(
+	      "div",
+	      { className: "guest" },
+	      _react2.default.createElement(
+	        "div",
+	        { className: "name" },
+	        first,
+	        " ",
+	        last
+	      ),
+	      _react2.default.createElement(
+	        "a",
+	        { href: 'mailto:' + email },
+	        email
+	      )
+	    );
+	  }
+	});
+
+	module.exports = GuestInformation;
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _react = __webpack_require__(8);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var RoomInformation = _react2.default.createClass({
+	  displayName: "RoomInformation",
+
+	  render: function render() {
+	    var _props = this.props,
+	        item_id = _props.item_id,
+	        room_code = _props.room_code,
+	        image_url = _props.image_url,
+	        short_desc = _props.short_desc,
+	        long_desc = _props.long_desc;
+
+
+	    return _react2.default.createElement(
+	      "div",
+	      { className: "room clearfix" },
+	      _react2.default.createElement(
+	        "div",
+	        { className: "column-3 float-left" },
+	        _react2.default.createElement("img", { src: image_url })
+	      ),
+	      _react2.default.createElement(
+	        "div",
+	        { className: "column-5 float-left" },
+	        _react2.default.createElement(
+	          "div",
+	          { className: "content" },
+	          _react2.default.createElement(
+	            "h4",
+	            { className: "short_desc" },
+	            short_desc
+	          ),
+	          _react2.default.createElement(
+	            "p",
+	            { className: "long_desc" },
+	            long_desc
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = RoomInformation;
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _react = __webpack_require__(8);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Summary = _react2.default.createClass({
+	  displayName: "Summary",
+
+	  render: function render() {
+	    var _props = this.props,
+	        code = _props.code,
+	        roomcost = _props.roomcost,
+	        servicefee = _props.servicefee,
+	        service = _props.service,
+	        total = _props.total;
+
+
+	    return _react2.default.createElement(
+	      "div",
+	      { className: "summary clearfix" },
+	      _react2.default.createElement("hr", null),
+	      _react2.default.createElement(
+	        "div",
+	        { className: "column-5 float-right" },
+	        _react2.default.createElement(
+	          "table",
+	          null,
+	          _react2.default.createElement(
+	            "thead",
+	            null,
+	            _react2.default.createElement(
+	              "tr",
+	              null,
+	              _react2.default.createElement(
+	                "th",
+	                { colSpan: "2" },
+	                "Summary of Charges"
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            "tbody",
+	            null,
+	            _react2.default.createElement(
+	              "tr",
+	              null,
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                "Room"
+	              ),
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                code
+	              )
+	            ),
+	            _react2.default.createElement(
+	              "tr",
+	              null,
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                "Service"
+	              ),
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                service
+	              )
+	            ),
+	            _react2.default.createElement(
+	              "tr",
+	              null,
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                "Room Cost"
+	              ),
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                "$",
+	                roomcost
+	              )
+	            ),
+	            _react2.default.createElement(
+	              "tr",
+	              null,
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                "Service Fee"
+	              ),
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                "$",
+	                servicefee
+	              )
+	            ),
+	            _react2.default.createElement(
+	              "tr",
+	              null,
+	              _react2.default.createElement(
+	                "td",
+	                null,
+	                "Room Subtotal"
+	              ),
+	              _react2.default.createElement(
+	                "td",
+	                { className: "total" },
+	                "$",
+	                total
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Summary;
+
+/***/ },
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var axios = __webpack_require__(280);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Offers = undefined;
 
-	var setGuest = function setGuest(guest) {
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(8);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Offer = __webpack_require__(284);
+
+	var _Offer2 = _interopRequireDefault(_Offer);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Offers = exports.Offers = _react2.default.createClass({
+	  displayName: 'Offers',
+
+
+	  render: function render() {
+	    var offers = this.props.offers;
+
+
+	    var renderOffers = function renderOffers() {
+	      return offers.map(function (offer) {
+	        return _react2.default.createElement(_Offer2.default, _extends({}, offer, { key: offer.item_id }));
+	      });
+	    };
+
+	    var renderWrapper = function renderWrapper() {
+	      if (offers.length > 0) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'offer-wrap' },
+	          _react2.default.createElement(
+	            'h4',
+	            null,
+	            'Take your stay to the next level!'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'offers' },
+	            _react2.default.createElement(
+	              'ul',
+	              null,
+	              renderOffers()
+	            )
+	          )
+	        );
+	      }
+	    };
+
+	    return _react2.default.createElement(
+	      'div',
+	      null,
+	      renderWrapper()
+	    );
+	  }
+	});
+
+	exports.default = Offers;
+
+/***/ },
+/* 284 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Offer = undefined;
+
+	var _react = __webpack_require__(8);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(179);
+
+	var _actions = __webpack_require__(285);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Offer = exports.Offer = _react2.default.createClass({
+	  displayName: 'Offer',
+
+
+	  selectOffer: function selectOffer(item_id) {
+	    this.props.selectOffer(item_id);
+	  },
+	  render: function render() {
+	    var _this = this;
+
+	    var _props = this.props,
+	        item_id = _props.item_id,
+	        image_url = _props.image_url,
+	        tag = _props.tag,
+	        short_desc = _props.short_desc,
+	        long_desc = _props.long_desc,
+	        price = _props.price,
+	        selected = _props.selected;
+
+
+	    return _react2.default.createElement(
+	      'li',
+	      { className: 'clearfix' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'column-3 float-left' },
+	        _react2.default.createElement('img', { src: image_url }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'tag' },
+	          tag
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'column-5 float-left' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'content' },
+	          _react2.default.createElement(
+	            'h4',
+	            { className: 'short_desc' },
+	            short_desc
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'long_desc' },
+	            _react2.default.createElement(
+	              'p',
+	              null,
+	              long_desc
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'price-area-items' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'price' },
+	              price
+	            ),
+	            _react2.default.createElement(
+	              'button',
+	              { type: 'button', className: 'expanded button', onClick: function onClick(e) {
+	                  e.preventDefault();
+	                  _this.selectOffer(item_id);
+	                } },
+	              selected ? 'Selected' : 'Choose'
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	exports.default = (0, _reactRedux.connect)(null, actions)(Offer);
+
+/***/ },
+/* 285 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.setGuest = setGuest;
+	exports.addRooms = addRooms;
+	var axios = __webpack_require__(286);
+
+	function setGuest(guest) {
 	  guest.price = Number(guest.price);
 	  return {
 	    type: 'SET_GUEST',
@@ -29545,23 +30070,23 @@
 	  };
 	};
 
-	var addRooms = function addRooms(rooms) {
+	function addRooms(rooms) {
 	  return {
 	    type: 'SET_ROOMS',
 	    rooms: rooms
 	  };
-	};
+	}
 
-	var selectOffer = function selectOffer(item_id) {
+	var selectOffer = exports.selectOffer = function selectOffer(item_id) {
 	  return {
 	    type: 'SELECT_OFFER',
 	    item_id: item_id
 	  };
 	};
 
-	var queryRooms = function queryRooms() {
+	var queryRooms = exports.queryRooms = function queryRooms() {
 
-	  var url = "/data/data.json";
+	  var url = "/rooms";
 
 	  return function (dispatch, getState) {
 
@@ -29578,15 +30103,15 @@
 	  };
 	};
 
-	var setSummary = function setSummary(summary) {
+	var setSummary = exports.setSummary = function setSummary(summary) {
 	  return {
 	    type: 'SET_SUMMARY',
 	    summary: summary
 	  };
 	};
 
-	var submitConfirmation = function submitConfirmation() {
-	  var url = "/api/rooms";
+	var submitConfirmation = exports.submitConfirmation = function submitConfirmation() {
+	  var url = "/api/confirmation";
 
 	  return function (dispatch, getState) {
 	    var _getState = getState(),
@@ -29610,30 +30135,21 @@
 	  };
 	};
 
-	module.exports = {
-	  setGuest: setGuest,
-	  queryRooms: queryRooms,
-	  addRooms: addRooms,
-	  selectOffer: selectOffer,
-	  setSummary: setSummary,
-	  submitConfirmation: submitConfirmation
-	};
-
 /***/ },
-/* 280 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(281);
+	module.exports = __webpack_require__(287);
 
 /***/ },
-/* 281 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
-	var bind = __webpack_require__(283);
-	var Axios = __webpack_require__(284);
+	var utils = __webpack_require__(288);
+	var bind = __webpack_require__(289);
+	var Axios = __webpack_require__(290);
 
 	/**
 	 * Create an instance of Axios
@@ -29669,7 +30185,7 @@
 	axios.all = function all(promises) {
 	  return Promise.all(promises);
 	};
-	axios.spread = __webpack_require__(301);
+	axios.spread = __webpack_require__(307);
 
 	module.exports = axios;
 
@@ -29678,12 +30194,12 @@
 
 
 /***/ },
-/* 282 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var bind = __webpack_require__(283);
+	var bind = __webpack_require__(289);
 
 	/*global toString:true*/
 
@@ -29983,7 +30499,7 @@
 
 
 /***/ },
-/* 283 */
+/* 289 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30000,17 +30516,17 @@
 
 
 /***/ },
-/* 284 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var defaults = __webpack_require__(285);
-	var utils = __webpack_require__(282);
-	var InterceptorManager = __webpack_require__(287);
-	var dispatchRequest = __webpack_require__(288);
-	var isAbsoluteURL = __webpack_require__(299);
-	var combineURLs = __webpack_require__(300);
+	var defaults = __webpack_require__(291);
+	var utils = __webpack_require__(288);
+	var InterceptorManager = __webpack_require__(293);
+	var dispatchRequest = __webpack_require__(294);
+	var isAbsoluteURL = __webpack_require__(305);
+	var combineURLs = __webpack_require__(306);
 
 	/**
 	 * Create a new instance of Axios
@@ -30091,13 +30607,13 @@
 
 
 /***/ },
-/* 285 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
-	var normalizeHeaderName = __webpack_require__(286);
+	var utils = __webpack_require__(288);
+	var normalizeHeaderName = __webpack_require__(292);
 
 	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 	var DEFAULT_CONTENT_TYPE = {
@@ -30169,12 +30685,12 @@
 
 
 /***/ },
-/* 286 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
+	var utils = __webpack_require__(288);
 
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -30187,12 +30703,12 @@
 
 
 /***/ },
-/* 287 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
+	var utils = __webpack_require__(288);
 
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -30245,13 +30761,13 @@
 
 
 /***/ },
-/* 288 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(282);
-	var transformData = __webpack_require__(289);
+	var utils = __webpack_require__(288);
+	var transformData = __webpack_require__(295);
 
 	/**
 	 * Dispatch a request to the server using whichever adapter
@@ -30292,10 +30808,10 @@
 	    adapter = config.adapter;
 	  } else if (typeof XMLHttpRequest !== 'undefined') {
 	    // For browsers use XHR adapter
-	    adapter = __webpack_require__(290);
+	    adapter = __webpack_require__(296);
 	  } else if (typeof process !== 'undefined') {
 	    // For node use HTTP adapter
-	    adapter = __webpack_require__(290);
+	    adapter = __webpack_require__(296);
 	  }
 
 	  return Promise.resolve(config)
@@ -30327,12 +30843,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ },
-/* 289 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
+	var utils = __webpack_require__(288);
 
 	/**
 	 * Transform the data for a request or a response
@@ -30353,18 +30869,18 @@
 
 
 /***/ },
-/* 290 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(282);
-	var settle = __webpack_require__(291);
-	var buildURL = __webpack_require__(294);
-	var parseHeaders = __webpack_require__(295);
-	var isURLSameOrigin = __webpack_require__(296);
-	var createError = __webpack_require__(292);
-	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(297);
+	var utils = __webpack_require__(288);
+	var settle = __webpack_require__(297);
+	var buildURL = __webpack_require__(300);
+	var parseHeaders = __webpack_require__(301);
+	var isURLSameOrigin = __webpack_require__(302);
+	var createError = __webpack_require__(298);
+	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(303);
 
 	module.exports = function xhrAdapter(config) {
 	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -30458,7 +30974,7 @@
 	    // This is only done if running in a standard browser environment.
 	    // Specifically not if we're in a web worker, or react-native.
 	    if (utils.isStandardBrowserEnv()) {
-	      var cookies = __webpack_require__(298);
+	      var cookies = __webpack_require__(304);
 
 	      // Add xsrf header
 	      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -30522,12 +31038,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ },
-/* 291 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createError = __webpack_require__(292);
+	var createError = __webpack_require__(298);
 
 	/**
 	 * Resolve or reject a Promise based on response status.
@@ -30553,12 +31069,12 @@
 
 
 /***/ },
-/* 292 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var enhanceError = __webpack_require__(293);
+	var enhanceError = __webpack_require__(299);
 
 	/**
 	 * Create an Error with the specified message, config, error code, and response.
@@ -30576,7 +31092,7 @@
 
 
 /***/ },
-/* 293 */
+/* 299 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30601,12 +31117,12 @@
 
 
 /***/ },
-/* 294 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
+	var utils = __webpack_require__(288);
 
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -30675,12 +31191,12 @@
 
 
 /***/ },
-/* 295 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
+	var utils = __webpack_require__(288);
 
 	/**
 	 * Parse headers into an object
@@ -30718,12 +31234,12 @@
 
 
 /***/ },
-/* 296 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
+	var utils = __webpack_require__(288);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -30792,7 +31308,7 @@
 
 
 /***/ },
-/* 297 */
+/* 303 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30834,12 +31350,12 @@
 
 
 /***/ },
-/* 298 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(282);
+	var utils = __webpack_require__(288);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -30893,7 +31409,7 @@
 
 
 /***/ },
-/* 299 */
+/* 305 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30913,7 +31429,7 @@
 
 
 /***/ },
-/* 300 */
+/* 306 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30931,7 +31447,7 @@
 
 
 /***/ },
-/* 301 */
+/* 307 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30964,287 +31480,7 @@
 
 
 /***/ },
-/* 302 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _react = __webpack_require__(8);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var GuestInformation = _react2.default.createClass({
-	  displayName: "GuestInformation",
-
-	  render: function render() {
-	    var _props = this.props,
-	        first = _props.first,
-	        last = _props.last,
-	        email = _props.email;
-
-
-	    return _react2.default.createElement(
-	      "div",
-	      { className: "guest" },
-	      _react2.default.createElement(
-	        "div",
-	        { className: "name" },
-	        first,
-	        " ",
-	        last
-	      ),
-	      _react2.default.createElement(
-	        "a",
-	        { href: 'mailto:' + email },
-	        email
-	      )
-	    );
-	  }
-	});
-
-	module.exports = GuestInformation;
-
-/***/ },
-/* 303 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _react = __webpack_require__(8);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var RoomInformation = _react2.default.createClass({
-	  displayName: "RoomInformation",
-
-	  render: function render() {
-	    var _props = this.props,
-	        item_id = _props.item_id,
-	        room_code = _props.room_code,
-	        image_url = _props.image_url,
-	        short_desc = _props.short_desc,
-	        long_desc = _props.long_desc;
-
-
-	    return _react2.default.createElement(
-	      "div",
-	      { className: "room clearfix" },
-	      _react2.default.createElement(
-	        "div",
-	        { className: "column-3 float-left" },
-	        _react2.default.createElement("img", { src: image_url })
-	      ),
-	      _react2.default.createElement(
-	        "div",
-	        { className: "column-5 float-left" },
-	        _react2.default.createElement(
-	          "div",
-	          { className: "content" },
-	          _react2.default.createElement(
-	            "h4",
-	            { className: "short_desc" },
-	            short_desc
-	          ),
-	          _react2.default.createElement(
-	            "p",
-	            { className: "long_desc" },
-	            long_desc
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = RoomInformation;
-
-/***/ },
-/* 304 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.Offers = undefined;
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _react = __webpack_require__(8);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(179);
-
-	var _actions = __webpack_require__(279);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
-	var _Offer = __webpack_require__(305);
-
-	var _Offer2 = _interopRequireDefault(_Offer);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Offers = exports.Offers = _react2.default.createClass({
-	  displayName: 'Offers',
-
-
-	  render: function render() {
-	    var offers = this.props.offers;
-
-
-	    var renderOffers = function renderOffers() {
-	      return offers.map(function (offer) {
-	        return _react2.default.createElement(_Offer2.default, _extends({}, offer, { key: offer.item_id }));
-	      });
-	    };
-
-	    var renderWrapper = function renderWrapper() {
-	      if (offers.length > 0) {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'offer-wrap' },
-	          _react2.default.createElement(
-	            'h4',
-	            null,
-	            'Take your stay to the next level!'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'offers' },
-	            _react2.default.createElement(
-	              'ul',
-	              null,
-	              renderOffers()
-	            )
-	          )
-	        );
-	      }
-	    };
-
-	    return _react2.default.createElement(
-	      'div',
-	      null,
-	      renderWrapper()
-	    );
-	  }
-	});
-
-	exports.default = (0, _reactRedux.connect)()(Offers);
-
-/***/ },
-/* 305 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.Offer = undefined;
-
-	var _react = __webpack_require__(8);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(179);
-
-	var _actions = __webpack_require__(279);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Offer = exports.Offer = _react2.default.createClass({
-	  displayName: 'Offer',
-
-
-	  selectOffer: function selectOffer(item_id) {
-	    var dispatch = this.props.dispatch;
-
-
-	    dispatch(_actions2.default.selectOffer(item_id));
-	  },
-	  render: function render() {
-	    var _this = this;
-
-	    var _props = this.props,
-	        item_id = _props.item_id,
-	        image_url = _props.image_url,
-	        tag = _props.tag,
-	        short_desc = _props.short_desc,
-	        long_desc = _props.long_desc,
-	        price = _props.price,
-	        selected = _props.selected;
-
-
-	    return _react2.default.createElement(
-	      'li',
-	      { className: 'clearfix' },
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'column-3 float-left' },
-	        _react2.default.createElement('img', { src: image_url }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'tag' },
-	          tag
-	        )
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'column-5 float-left' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'content' },
-	          _react2.default.createElement(
-	            'h4',
-	            { className: 'short_desc' },
-	            short_desc
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'long_desc' },
-	            _react2.default.createElement(
-	              'p',
-	              null,
-	              long_desc
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'price-area-items' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'price' },
-	              price
-	            ),
-	            _react2.default.createElement(
-	              'button',
-	              { type: 'button', className: 'expanded button', onClick: function onClick(e) {
-	                  e.preventDefault();
-	                  _this.selectOffer(item_id);
-	                } },
-	              selected ? 'Selected' : 'Choose'
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-
-	});
-
-	exports.default = (0, _reactRedux.connect)()(Offer);
-
-/***/ },
-/* 306 */
+/* 308 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31325,235 +31561,6 @@
 	    };
 	  }
 	};
-
-/***/ },
-/* 307 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.Confirmation = undefined;
-
-	var _react = __webpack_require__(8);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(179);
-
-	var _actions = __webpack_require__(279);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
-	var _GuestInformation = __webpack_require__(302);
-
-	var _GuestInformation2 = _interopRequireDefault(_GuestInformation);
-
-	var _RoomInformation = __webpack_require__(303);
-
-	var _RoomInformation2 = _interopRequireDefault(_RoomInformation);
-
-	var _Summary = __webpack_require__(308);
-
-	var _Summary2 = _interopRequireDefault(_Summary);
-
-	var _Offers = __webpack_require__(304);
-
-	var _Offers2 = _interopRequireDefault(_Offers);
-
-	var _BookingAPI = __webpack_require__(306);
-
-	var _BookingAPI2 = _interopRequireDefault(_BookingAPI);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Confirmation = exports.Confirmation = _react2.default.createClass({
-	  displayName: 'Confirmation',
-
-	  contextTypes: {
-	    router: _react2.default.PropTypes.object
-	  },
-	  componentDidMount: function componentDidMount() {},
-	  render: function render() {
-	    var _props = this.props,
-	        guest = _props.guest,
-	        rooms = _props.rooms,
-	        summary = _props.summary;
-
-	    var bookedroom = _BookingAPI2.default.getUpgradedRoom(rooms, guest);
-
-	    return _react2.default.createElement(
-	      'div',
-	      { className: 'small-11 small-centered medium-8 medium-centered large-8 large-centered columns' },
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'container' },
-	        _react2.default.createElement(
-	          'h1',
-	          { className: 'page-title-thick' },
-	          'Confirmation for booking with NorOne'
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'details' },
-	          _react2.default.createElement(_GuestInformation2.default, guest),
-	          _react2.default.createElement(_RoomInformation2.default, bookedroom),
-	          _react2.default.createElement(_Summary2.default, summary)
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement('i', { className: 'fi-asterisk' }),
-	          ' This page view is designed to route to main page on refresh.'
-	        )
-	      )
-	    );
-	  }
-	});
-
-	var mapStateToProps = function mapStateToProps(state) {
-	  return {
-	    guest: state.model.guest,
-	    rooms: state.model.rooms,
-	    summary: state.summary
-	  };
-	};
-
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Confirmation);
-
-/***/ },
-/* 308 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _react = __webpack_require__(8);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Summary = _react2.default.createClass({
-	  displayName: "Summary",
-
-	  render: function render() {
-	    var _props = this.props,
-	        code = _props.code,
-	        roomcost = _props.roomcost,
-	        servicefee = _props.servicefee,
-	        service = _props.service,
-	        total = _props.total;
-
-
-	    return _react2.default.createElement(
-	      "div",
-	      { className: "summary clearfix" },
-	      _react2.default.createElement("hr", null),
-	      _react2.default.createElement(
-	        "div",
-	        { className: "column-5 float-right" },
-	        _react2.default.createElement(
-	          "table",
-	          null,
-	          _react2.default.createElement(
-	            "thead",
-	            null,
-	            _react2.default.createElement(
-	              "tr",
-	              null,
-	              _react2.default.createElement(
-	                "th",
-	                { colSpan: "2" },
-	                "Summary of Charges"
-	              )
-	            )
-	          ),
-	          _react2.default.createElement(
-	            "tbody",
-	            null,
-	            _react2.default.createElement(
-	              "tr",
-	              null,
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                "Room"
-	              ),
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                code
-	              )
-	            ),
-	            _react2.default.createElement(
-	              "tr",
-	              null,
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                "Service"
-	              ),
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                service
-	              )
-	            ),
-	            _react2.default.createElement(
-	              "tr",
-	              null,
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                "Room Cost"
-	              ),
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                "$",
-	                roomcost
-	              )
-	            ),
-	            _react2.default.createElement(
-	              "tr",
-	              null,
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                "Service Fee"
-	              ),
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                "$",
-	                servicefee
-	              )
-	            ),
-	            _react2.default.createElement(
-	              "tr",
-	              null,
-	              _react2.default.createElement(
-	                "td",
-	                null,
-	                "Room Subtotal"
-	              ),
-	              _react2.default.createElement(
-	                "td",
-	                { className: "total" },
-	                "$",
-	                total
-	              )
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = Summary;
 
 /***/ },
 /* 309 */

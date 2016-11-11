@@ -1,6 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import actions from '../actions/actions';
 
 import Offer from 'Offer';
 
@@ -39,4 +37,4 @@ export var Offers = React.createClass({
   }
 });
 
-export default connect()(Offers);
+export default Offers;

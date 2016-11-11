@@ -20,6 +20,7 @@ Thumbs.db
 *.rar
 *.tar
 *.zip
+*.log
 
 # dev dependency modules #
 node_modules/

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import actions from '../actions/actions';
+import * as actions from '../actions/actions';
 
 import GuestInformation from 'GuestInformation';
 import RoomInformation from 'RoomInformation';
@@ -8,31 +8,29 @@ import Offers from 'Offers';
 
 import BookingAPI from 'BookingAPI';
 
-export var Reservation = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.object
-  },
-  componentDidMount: function(){
-    var {dispatch} = this.props;
+class Reservation extends Component {
 
-    dispatch(actions.setGuest(this.props.location.query));
-    dispatch(actions.queryRooms());
-  },
-  handleConfirm: function(e){
+  componentWillMount(){
+    this.props.setGuest(this.props.location.query);
+    this.props.queryRooms();
+  }
+
+  handleConfirm(e) {
     e.preventDefault();
 
-    let {guest, rooms, dispatch} = this.props;
+    let {guest, rooms, setSummary, submitConfirmation} = this.props;
 
     //dispatch Confirmation
     let summary = BookingAPI.getSummary(rooms, guest);
-    dispatch( actions.setSummary(summary) );
-    dispatch(actions.submitConfirmation());
+    setSummary(summary);
+    submitConfirmation();
     //route to confirmation page
     this.context.router.push({
       pathname:'/confirmation'
     });
-  },
-  render: function(){
+  }
+
+  render(){
 
     let {guest, rooms, dispatch} = this.props;
     let offers = [];
@@ -50,7 +48,7 @@ export var Reservation = React.createClass({
             <RoomInformation {...bookedroom}/>
             <Offers offers={offers}/>
             <div className="confirm-wrap">
-            <button className="button" onClick={this.handleConfirm}>Confirm</button>
+            <button className="button" onClick={this.handleConfirm.bind(this)}>Confirm</button>
             </div>
           </div>
 
@@ -62,7 +60,12 @@ export var Reservation = React.createClass({
       </div>
     );
   }
-});
+
+}
+
+Reservation.contextTypes = {
+  router: React.PropTypes.object
+};
 
 var mapStateToProps = (state)=>{
   return {
@@ -71,4 +74,4 @@ var mapStateToProps = (state)=>{
   }
 };
 
-export default connect(mapStateToProps)(Reservation);
+export default connect(mapStateToProps, actions)(Reservation);

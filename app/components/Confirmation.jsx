@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import actions from '../actions/actions';
 
 import GuestInformation from 'GuestInformation';
 import RoomInformation from 'RoomInformation';
@@ -12,9 +11,6 @@ import BookingAPI from 'BookingAPI';
 export var Confirmation = React.createClass({
   contextTypes: {
     router: React.PropTypes.object
-  },
-  componentDidMount: function(){
-
   },
   render: function(){
 

@@ -21,5 +21,5 @@ var Nav = function(){
       </div>
     );
 };
-//<!--<li><Link to="/schedule" activeClassName="active-link">My Schedule</Link></li>-->
+
 module.exports = Nav;

@@ -1,13 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import actions from '../actions/actions';
+import * as actions from '../actions/actions';
 
 export var Offer = React.createClass({
 
   selectOffer: function(item_id){
-    var {dispatch} = this.props;
-
-    dispatch( actions.selectOffer(item_id) );
+    this.props.selectOffer(item_id);
   },
   render: function(){
 
@@ -31,7 +29,7 @@ export var Offer = React.createClass({
                   <div className="price">{price}</div>
                   <button type="button" className="expanded button" onClick={(e)=>{
                       e.preventDefault();
-                      this.selectOffer(item_id)
+                      this.selectOffer(item_id);
                   }}>{selected ? 'Selected' : 'Choose'}</button>
                 </div>
               </div>
@@ -42,4 +40,4 @@ export var Offer = React.createClass({
 
 });
 
-export default connect()(Offer);
+export default connect(null, actions)(Offer);

@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-var setGuest = (guest) => {
+export function setGuest(guest) {
   guest.price = Number(guest.price);
   return {
     type: 'SET_GUEST',
@@ -8,23 +8,23 @@ var setGuest = (guest) => {
   }
 };
 
-var addRooms = (rooms)=>{
+export function addRooms(rooms){
   return {
     type: 'SET_ROOMS',
     rooms
   };
 }
 
-var selectOffer = (item_id)=>{
+export var selectOffer = (item_id)=>{
   return {
     type: 'SELECT_OFFER',
     item_id
   };
 }
 
-var queryRooms = ()=>{
+export var queryRooms = ()=>{
 
-  let url = "/data/data.json";
+  let url = "/rooms";
 
   return (dispatch, getState) =>{
 
@@ -41,15 +41,15 @@ var queryRooms = ()=>{
   };
 };
 
-var setSummary = (summary)=>{
+export var setSummary = (summary)=>{
   return {
     type: 'SET_SUMMARY',
     summary
   }
 };
 
-var submitConfirmation = ()=>{
-  let url = "/api/rooms";
+export var submitConfirmation = ()=>{
+  let url = "/api/confirmation";
 
   return (dispatch, getState)=>{
     let {summary, model} = getState();
@@ -69,12 +69,3 @@ var submitConfirmation = ()=>{
     return axios.post(url, data).then(success).catch(failed);
   };
 };
-
-module.exports = {
-  setGuest,
-  queryRooms,
-  addRooms,
-  selectOffer,
-  setSummary,
-  submitConfirmation
-}

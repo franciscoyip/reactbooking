@@ -9,7 +9,6 @@ var Main = React.createClass({
         <div className="row overlay">
           {this.props.children}
         </div>
-
       </div>
     );
     },

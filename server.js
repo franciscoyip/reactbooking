@@ -5,11 +5,7 @@ var app = express();
 const PORT = process.env.PORT || 8080;
 
 // serve static assets normally
-app.use(express.static(__dirname + '/public'))
-
-app.get('/reserved', function (request, res){
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
-});
+app.use(express.static(__dirname + '/public'));
 
 app.get('/rooms', function (request, res){
   res.send(Data.getData('data.json'));
@@ -17,6 +13,10 @@ app.get('/rooms', function (request, res){
 
 app.get('/confirmation', function (request, res){
   res.redirect('/');
+});
+
+app.get('*', function (req, res){
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 });
 
 app.listen(PORT, function(){

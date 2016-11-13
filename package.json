@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "karma start",
+    "postinstall":"webpack -p",
     "start": "node server.js"
   },
   "author": "",
